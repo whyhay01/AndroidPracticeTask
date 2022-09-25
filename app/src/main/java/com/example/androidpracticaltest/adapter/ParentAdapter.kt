@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidpracticaltest.databinding.DisplayAlbumBinding
+import com.example.androidpracticaltest.models.CustomResponse
 import com.example.androidpracticaltest.sampleData.ParentItem
 
-class ParentAdapter(var parentData: List<ParentItem>) :
+class ParentAdapter(var parentData: List<CustomResponse>) :
     RecyclerView.Adapter<ParentAdapter.ParentViewHolder>() {
 
 
@@ -18,28 +19,30 @@ class ParentAdapter(var parentData: List<ParentItem>) :
 
     override fun onBindViewHolder(holder: ParentViewHolder, position: Int) {
         val dataPosition = position % parentData.size
-        val data = parentData[dataPosition]
-
-        holder.bind.title.text = data.title
-
-        holder.bind.apply {
-            pictureRv.layoutManager =
-                LinearLayoutManager(holder.bind.root.context, LinearLayoutManager.HORIZONTAL, false)
-            pictureRv.adapter = ChildAdapter(data.childList)
-            pictureRv.scrollToPosition(Integer.MAX_VALUE/2)
-
-
-        }
+        val data: CustomResponse = parentData[dataPosition]
+        holder.bindView(data)
     }
 
-    override fun getItemCount(): Int {
-        return Integer.MAX_VALUE
-    }
+    override fun getItemCount(): Int = Integer.MAX_VALUE
 
     inner class ParentViewHolder(binding: DisplayAlbumBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        val bind = binding
+        private val bind = binding
+
+        fun bindView(bindingData: CustomResponse) {
+            bind.apply {
+                title.text = bindingData.title
+
+                pictureRv.apply {
+                    layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = ChildAdapter(bindingData.albumPhotos)
+                    scrollToPosition(Integer.MAX_VALUE)
+                }
+            }
+
+        }
 
     }
 }

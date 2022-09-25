@@ -1,10 +1,9 @@
 package com.example.androidpracticaltest.di
 
+import com.example.androidpracticaltest.db.AppDatabase
 import com.example.androidpracticaltest.network.NetworkService
-import com.example.androidpracticaltest.utils.API_CONNECT_TIMEOUT
-import com.example.androidpracticaltest.utils.API_READ_TIMEOUT
-import com.example.androidpracticaltest.utils.API_WRITE_TIMEOUT
-import com.example.androidpracticaltest.utils.BASE_URL
+import com.example.androidpracticaltest.repository.Repository
+import com.example.androidpracticaltest.utils.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -20,7 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule{
+object NetworkModule {
 
     @Provides
     fun provideGson(): Gson = GsonBuilder().create()
@@ -54,5 +53,14 @@ object NetworkModule{
         .build()
 
     @Provides
-    fun provideNetworkService(retrofit: Retrofit): NetworkService = retrofit.create(NetworkService::class.java)
+    fun provideNetworkService(retrofit: Retrofit): NetworkService =
+        retrofit.create(NetworkService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideRemoteData(
+        service: NetworkService,
+        convert: DataConverter,
+        database: AppDatabase
+    ): Repository = Repository(service, database ,convert)
 }

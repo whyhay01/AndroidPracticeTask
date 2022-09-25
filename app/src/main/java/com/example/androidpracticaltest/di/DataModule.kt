@@ -2,9 +2,9 @@ package com.example.androidpracticaltest.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.androidpracticaltest.db.AlbumDao
 import com.example.androidpracticaltest.db.AlbumPhotoDao
 import com.example.androidpracticaltest.db.AppDatabase
+import com.example.androidpracticaltest.utils.DataConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,9 +27,10 @@ object DataModule {
         ).build()
     }
 
+
     @Provides
-    fun provideAlbumDao(appDatabase: AppDatabase):AlbumDao{
-        return appDatabase.albumDao()
+    fun provideDataConvert():DataConverter{
+        return DataConverter()
     }
 
     @Provides
