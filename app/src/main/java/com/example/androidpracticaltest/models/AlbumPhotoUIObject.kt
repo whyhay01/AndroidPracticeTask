@@ -1,7 +1,7 @@
 package com.example.androidpracticaltest.models
 
 
-data class CustomResponse(
+data class AlbumPhotoUIObject(
     val id:Int,
     val title: String,
     val albumPhotos: List<AlbumPhoto>

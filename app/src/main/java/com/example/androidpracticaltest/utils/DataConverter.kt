@@ -2,13 +2,13 @@ package com.example.androidpracticaltest.utils
 
 import android.util.Log
 import com.example.androidpracticaltest.models.AlbumPhoto
-import com.example.androidpracticaltest.models.CustomResponse
+import com.example.androidpracticaltest.models.AlbumPhotoUIObject
 
 class DataConverter {
     private val hashMapIdWise = HashMap<Int, ArrayList<AlbumPhoto>>()
 
-    fun convertData(albumPhotos:List<AlbumPhoto>?):List<CustomResponse>{
-        val customResponse = ArrayList<CustomResponse>()
+    fun convertData(albumPhotos:List<AlbumPhoto>?):List<AlbumPhotoUIObject>{
+        val customResponse = ArrayList<AlbumPhotoUIObject>()
 
         albumPhotos?.forEach { albumPhoto ->
             if (hashMapIdWise.contains(albumPhoto.albumId)){
@@ -27,7 +27,7 @@ class DataConverter {
         Log.d("DataConverter class", "convertData:${hashMapIdWise} ")
 
         hashMapIdWise.forEach {
-            customResponse.add(CustomResponse(it.key,"Album Title ${it.key}" , it.value))
+            customResponse.add(AlbumPhotoUIObject(it.key,"Album Title ${it.key}" , it.value))
         }
 
         return customResponse.toList()

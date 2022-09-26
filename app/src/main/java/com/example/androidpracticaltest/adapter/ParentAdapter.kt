@@ -6,12 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidpracticaltest.databinding.DisplayAlbumBinding
-import com.example.androidpracticaltest.models.CustomResponse
-import com.example.androidpracticaltest.sampleData.ParentItem
+import com.example.androidpracticaltest.models.AlbumPhotoUIObject
 import com.example.androidpracticaltest.utils.ParentComparator
 
-class ParentAdapter() :
-    ListAdapter<CustomResponse, ParentAdapter.ParentViewHolder>(ParentComparator()) {
+class ParentAdapter(private val albumPhotoUIObjects: List<AlbumPhotoUIObject>) :
+    RecyclerView.Adapter< ParentAdapter.ParentViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentViewHolder {
@@ -20,28 +19,31 @@ class ParentAdapter() :
     }
 
     override fun onBindViewHolder(holder: ParentViewHolder, position: Int) {
-        val dataPosition = position % itemCount
-        val data: CustomResponse = getItem(dataPosition)
+        val dataPosition = position % albumPhotoUIObjects.size
+        val data: AlbumPhotoUIObject = albumPhotoUIObjects[dataPosition]
         holder.bindView(data)
     }
 
-//    override fun getItemCount(): Int = Integer.MAX_VALUE
+    override fun getItemCount(): Int = Integer.MAX_VALUE
 
     inner class ParentViewHolder(binding: DisplayAlbumBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         private val bind = binding
 
-        fun bindView(bindingData: CustomResponse) {
+        fun bindView(bindingData: AlbumPhotoUIObject) {
             bind.apply {
                 title.text = bindingData.title
 
+
+                //Child recyclerView implementation
                 pictureRv.apply {
+                    val childAdapter = ChildAdapter(bindingData.albumPhotos)
                     layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    adapter = ChildAdapter()
-                    ChildAdapter().submitList(bindingData.albumPhotos)
-//                    scrollToPosition(Integer.MAX_VALUE)
+                    adapter = childAdapter
+//                    adapter?.notifyItemMoved(0, bindingData.albumPhotos.size)
+                    scrollToPosition(Integer.MAX_VALUE)
                 }
             }
 
