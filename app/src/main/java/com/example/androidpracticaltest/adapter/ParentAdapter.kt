@@ -3,13 +3,15 @@ package com.example.androidpracticaltest.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidpracticaltest.databinding.DisplayAlbumBinding
 import com.example.androidpracticaltest.models.CustomResponse
 import com.example.androidpracticaltest.sampleData.ParentItem
+import com.example.androidpracticaltest.utils.ParentComparator
 
-class ParentAdapter(var parentData: List<CustomResponse>) :
-    RecyclerView.Adapter<ParentAdapter.ParentViewHolder>() {
+class ParentAdapter() :
+    ListAdapter<CustomResponse, ParentAdapter.ParentViewHolder>(ParentComparator()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentViewHolder {
@@ -18,12 +20,12 @@ class ParentAdapter(var parentData: List<CustomResponse>) :
     }
 
     override fun onBindViewHolder(holder: ParentViewHolder, position: Int) {
-        val dataPosition = position % parentData.size
-        val data: CustomResponse = parentData[dataPosition]
+        val dataPosition = position % itemCount
+        val data: CustomResponse = getItem(dataPosition)
         holder.bindView(data)
     }
 
-    override fun getItemCount(): Int = Integer.MAX_VALUE
+//    override fun getItemCount(): Int = Integer.MAX_VALUE
 
     inner class ParentViewHolder(binding: DisplayAlbumBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -37,8 +39,9 @@ class ParentAdapter(var parentData: List<CustomResponse>) :
                 pictureRv.apply {
                     layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    adapter = ChildAdapter(bindingData.albumPhotos)
-                    scrollToPosition(Integer.MAX_VALUE)
+                    adapter = ChildAdapter()
+                    ChildAdapter().submitList(bindingData.albumPhotos)
+//                    scrollToPosition(Integer.MAX_VALUE)
                 }
             }
 

@@ -1,40 +1,48 @@
 package com.example.androidpracticaltest.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.androidpracticaltest.models.AlbumPhoto
-import com.example.androidpracticaltest.models.CustomResponse
 import com.example.androidpracticaltest.repository.Repository
 import com.example.androidpracticaltest.utils.DataConverter
+import com.example.androidpracticaltest.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
+import androidx.lifecycle.*
 
 @HiltViewModel
-class AlbumViewModel @Inject constructor(private val repo: Repository, private val converter: DataConverter): ViewModel() {
-    private val _albumPhoto: MutableLiveData<List<CustomResponse>> =  MutableLiveData()
-    val albumPhoto:LiveData<List<CustomResponse>>
-        get() = _albumPhoto
+class AlbumViewModel @Inject constructor(
+    repo: Repository,
+) : ViewModel() {
 
-    fun getAlbumPhotos(){
+    val albumPhoto: LiveData<Resource<List<AlbumPhoto>>> = repo.getAlbumPhoto().asLiveData()
 
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO){
-                    repo.getPhotos().collect{
+//    private val _albumPhotos: MutableStateFlow<Resource<List<AlbumPhoto>>?> = MutableStateFlow(null)
+//    val albumPhotos = _albumPhotos.asStateFlow()
+//
+//    fun getAlbumPhotos(){
+//
+//    }
 
-                        Log.d("AlbumViewModel", "getAlbumPhotos: ${it[1]} ")
-                        _albumPhoto.postValue(converter.convertData(it))
-                    }
-                }
-            }catch (e:Exception){
-                Log.d("AlbumViewModel", "getAlbumPhotos: $e")
-            }
-        }
-    }
+//    private val _albumPhoto: MutableLiveData<List<CustomResponse>> =  MutableLiveData()
+//    val albumPhoto:LiveData<List<CustomResponse>>
+//        get() = _albumPhoto
+//
+//    fun getAlbumPhotos(){
+//
+//        viewModelScope.launch {
+//            try {
+//                withContext(Dispatchers.IO){
+//                    repo.getPhotos().collect{
+//
+//                        Log.d("AlbumViewModel", "getAlbumPhotos: ${it[1]} ")
+//                        _albumPhoto.postValue(converter.convertData(it))
+//                    }
+//                }
+//            }catch (e:Exception){
+//                Log.d("AlbumViewModel", "getAlbumPhotos: $e")
+//            }
+//        }
+//    }
 }

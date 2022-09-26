@@ -1,5 +1,6 @@
 package com.example.androidpracticaltest.di
 
+import com.example.androidpracticaltest.db.AlbumPhotoDao
 import com.example.androidpracticaltest.db.AppDatabase
 import com.example.androidpracticaltest.network.NetworkService
 import com.example.androidpracticaltest.repository.Repository
@@ -60,7 +61,7 @@ object NetworkModule {
     @Provides
     fun provideRemoteData(
         service: NetworkService,
-        convert: DataConverter,
-        database: AppDatabase
-    ): Repository = Repository(service, database ,convert)
+        database: AppDatabase,
+        albumPhotoDao: AlbumPhotoDao
+    ): Repository = Repository(service, database, albumPhotoDao)
 }

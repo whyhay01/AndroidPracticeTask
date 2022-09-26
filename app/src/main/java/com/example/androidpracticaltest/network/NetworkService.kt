@@ -7,9 +7,9 @@ import retrofit2.http.GET
 
 interface NetworkService {
 
-    @GET("albums")
-    suspend fun getAlbums():Response<List<Album>>
+//    @GET("albums")
+//    suspend fun getAlbums():Response<List<Album>>
 
     @GET("photos")
-    suspend fun getPhotos():Response<List<AlbumPhoto>>
+    suspend fun getPhotos():List<AlbumPhoto>
 }

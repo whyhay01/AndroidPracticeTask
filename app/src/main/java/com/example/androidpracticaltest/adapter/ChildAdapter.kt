@@ -3,14 +3,17 @@ package com.example.androidpracticaltest.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.bumptech.glide.Glide
 import com.example.androidpracticaltest.R
 import com.example.androidpracticaltest.databinding.DisplayPicturesBinding
 import com.example.androidpracticaltest.models.AlbumPhoto
+import com.example.androidpracticaltest.utils.ChildComparator
 
-class ChildAdapter(private val childData:List<AlbumPhoto>):RecyclerView.Adapter<ChildAdapter.ChildViewHolder>() {
+class ChildAdapter():
+    ListAdapter<AlbumPhoto,ChildAdapter.ChildViewHolder>(ChildComparator()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChildViewHolder {
@@ -19,8 +22,8 @@ class ChildAdapter(private val childData:List<AlbumPhoto>):RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: ChildViewHolder, position: Int) {
-        val dataPosition = position % childData.size
-        val bindingData: AlbumPhoto = childData[dataPosition]
+        val dataPosition = position % itemCount
+        val bindingData: AlbumPhoto = getItem(dataPosition)
         holder.bindView(bindingData)
 
 
@@ -34,18 +37,19 @@ class ChildAdapter(private val childData:List<AlbumPhoto>):RecyclerView.Adapter<
 ////       }
     }
 
-    override fun getItemCount() :Int = Integer.MAX_VALUE
+//    override fun getItemCount(): Int = Integer.MAX_VALUE
 
-    inner class ChildViewHolder(binding: DisplayPicturesBinding): RecyclerView.ViewHolder(binding.root){
+    inner class ChildViewHolder(binding: DisplayPicturesBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         private val bind = binding
 
-        fun bindView(bindingData:AlbumPhoto){
+        fun bindView(bindingData: AlbumPhoto) {
             bind.apply {
 
-                displayImage.load(bindingData.imageUrl){
+                displayImage.load(bindingData.imageUrl) {
                     error(R.drawable.ic_baseline_error_outline_24)
                     placeholder(R.drawable.image_four)
-                    size(150,150)
+                    size(150, 150)
                 }
 
 //                Glide.with(itemView)
