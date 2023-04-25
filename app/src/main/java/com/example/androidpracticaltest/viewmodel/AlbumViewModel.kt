@@ -11,26 +11,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import androidx.lifecycle.*
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AlbumViewModel @Inject constructor(
-    private val repo: Repository,
+    repo: Repository,
 ) : ViewModel() {
+    val albumPhoto = repo.getAlbumPhoto().asLiveData()
 
-    private val _albumPhoto: MutableStateFlow<Resource<List<AlbumPhoto>>?> = MutableStateFlow(null)
-    val albumPhoto = _albumPhoto.asStateFlow()
-
-    fun getAlbumPhotos(){
-        viewModelScope.launch {
-           repo.getAlbumPhoto().collect{
-               _albumPhoto.value = it
-
-               Log.d("AlbumViewModel", "getAlbumPhotos: $it")
-           }
-        }
-    }
 
 }

@@ -24,11 +24,12 @@ class DataConverter {
                 hashMapIdWise[albumPhoto.albumId] = consolidateList
             }
         }
-        Log.d("DataConverter class", "convertData:${hashMapIdWise} ")
+
 
         hashMapIdWise.forEach {
             customResponse.add(AlbumPhotoUIObject(it.key,"Album Title ${it.key}" , it.value))
         }
+        Log.d("DataConverter class", "convertData:${customResponse} ")
 
         return customResponse.toList()
     }

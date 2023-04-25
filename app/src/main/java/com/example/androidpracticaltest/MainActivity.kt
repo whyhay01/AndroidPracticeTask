@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,58 +24,33 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityMainBinding
-    private val mViewModel: AlbumViewModel by viewModels()
-    private val converter= DataConverter()
-    private var parentAdapter:ParentAdapter? = null
+    private val mViewModel by lazy {
+        ViewModelProvider(this).get(AlbumViewModel::class.java)
+    }
 
+    private val converter = DataConverter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //ViewModel
-        mViewModel.getAlbumPhotos()
 
+        binding.apply {
+            parentRV.apply {
+                mViewModel.albumPhoto.observe(this@MainActivity) { result ->
+                    if (result is Resource.Success || result.data!!.isNotEmpty()) {
+                        val bindingData: List<AlbumPhotoUIObject> = converter.convertData(result.data)
+                        adapter = ParentAdapter(bindingData)
+                        scrollToPosition(Integer.MAX_VALUE / 2)
+                    }
 
-        //ViewModelObserver
-        observeViewModel()
-
-        implementRecyclerView()
-    }
-
-    private fun observeViewModel(){
-        lifecycleScope.launch {
-
-            mViewModel.albumPhoto.flowWithLifecycle(lifecycle,Lifecycle.State.STARTED).collect{ result ->
-
-                val bindingData: List<AlbumPhotoUIObject> = converter.convertData(result?.data)
-                parentAdapter = ParentAdapter(bindingData)
-                binding.parentRV.adapter?.notifyDataSetChanged()
-//                binding.parentRV.apply {
-//
-//                    adapter = ParentAdapter(bindingData)
-//                    layoutManager = LinearLayoutManager(this@MainActivity,LinearLayoutManager.VERTICAL, false)
-//                    scrollToPosition(Integer.MAX_VALUE)
-//                }
-
-
-                binding.progressBar.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
-                binding.errorMessage.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
-                binding.errorMessage.text =  result?.error?.localizedMessage
-
+                    progressBar.isVisible =
+                        result is Resource.Loading && result.data.isNullOrEmpty()
+                    errorMessage.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
+                    errorMessage.text = result?.error?.localizedMessage
+                }
             }
         }
-    }
-
-    private fun implementRecyclerView(){
-        binding.parentRV.apply {
-            adapter = parentAdapter
-            layoutManager = LinearLayoutManager(this@MainActivity,LinearLayoutManager.VERTICAL,false)
-            scrollToPosition(Integer.MAX_VALUE)
-//            adapter?.notifyDataSetChanged()
-
-        }
-
 
     }
 
